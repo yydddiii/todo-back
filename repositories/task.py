@@ -15,7 +15,7 @@ class TasksRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(TasksOrm).where(TasksOrm.user_id == data.user_id)
+            query = select(TasksOrm).where(TasksOrm.user_id == data["user_id"])
             result = await session.execute(query)
             all_tasks = result.scalars().all()
 
@@ -30,14 +30,14 @@ class TasksRepository:
                 return access_token
 
             new_task = TasksOrm(
-                name=data.name,
+                name=data["name"],
                 is_archived=False,
                 is_checked=False,
-                date=data.date,
-                user_id=data.user_id,
-                date_time=data.date_time,
-                category_id=data.category_id,
-                description=data.description
+                date=data["date"],
+                user_id=data["user_id"],
+                date_time=data["date_time"],
+                category_id=data["category_id"],
+                description=data["description"]
             )
             session.add(new_task)
 
@@ -54,17 +54,17 @@ class TasksRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(TasksOrm).where(TasksOrm.id == data.task_id)
+            query = select(TasksOrm).where(TasksOrm.id == data["task_id"])
             result = await session.execute(query)
             task = result.scalars().first()
 
             if task == None:
                 return {"code": 404, "status": "not found"}
 
-            if task.is_checked == data.new_value:
+            if task.is_checked == data["new_value"]:
                 return {"code": 208, "status": "already reported"}
 
-            task.is_checked = data.new_value
+            task.is_checked = data["new_value"]
 
             await session.flush()
             await session.commit()
@@ -79,7 +79,7 @@ class TasksRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(TasksOrm).where(TasksOrm.id == data.task_id)
+            query = select(TasksOrm).where(TasksOrm.id == data["task_id"])
             result = await session.execute(query)
             task = result.scalars().first()
 
@@ -104,7 +104,7 @@ class TasksRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = delete(TasksOrm).where(TasksOrm.id == data.task_id)
+            query = delete(TasksOrm).where(TasksOrm.id == data["task_id"])
             await session.execute(query)
 
             await session.flush()
@@ -120,14 +120,14 @@ class TasksRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(TasksOrm).where(TasksOrm.id == data.task_id)
+            query = select(TasksOrm).where(TasksOrm.id == data["task_id"])
             result = await session.execute(query)
             task = result.scalars().first()
 
             if task == None:
                 return {"code": 404, "status": "not found"}
 
-            task.description = data.description
+            task.description = data["description"]
 
             await session.flush()
             await session.commit()
@@ -142,14 +142,14 @@ class TasksRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(TasksOrm).where(TasksOrm.id == data.task_id)
+            query = select(TasksOrm).where(TasksOrm.id == data["task_id"])
             result = await session.execute(query)
             task = result.scalars().first()
 
             if task == None:
                 return {"code": 404, "status": "not found"}
 
-            task.name = data.new_name
+            task.name = data["new_name"]
 
             await session.flush()
             await session.commit()
@@ -164,22 +164,22 @@ class TasksRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(TasksOrm).where(TasksOrm.id == data.task_id)
+            query = select(TasksOrm).where(TasksOrm.id == data["task_id"])
             result = await session.execute(query)
             task = result.scalars().first()
 
             if task == None:
                 return {"code": 404, "status": "not found"}
 
-            if data.new_category != None:
-                query = select(CategoriesOrm).where(CategoriesOrm.id == data.new_category)
+            if data["new_category"] != None:
+                query = select(CategoriesOrm).where(CategoriesOrm.id == data["new_category"])
                 result = await session.execute(query)
                 category = result.scalars().first()
 
                 if category == None:
                     return {"code": 404, "status": "not found"}
 
-            task.category_id = data.new_category
+            task.category_id = data["new_category"]
 
             await session.flush()
             await session.commit()

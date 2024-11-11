@@ -17,7 +17,7 @@ class CategoriesRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(CategoriesOrm).where(CategoriesOrm.user_id == data.user_id)
+            query = select(CategoriesOrm).where(CategoriesOrm.user_id == data["user_id"])
             result = await session.execute(query)
             all_categories = result.scalars().all()
 
@@ -31,7 +31,7 @@ class CategoriesRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(CategoriesOrm).where(CategoriesOrm.user_id == data.user_id)
+            query = select(CategoriesOrm).where(CategoriesOrm.user_id == data["user_id"])
             result = await session.execute(query)
             all_categories = result.scalars().all()
 
@@ -39,10 +39,10 @@ class CategoriesRepository:
                 return {"code": 423, "status": "locked", "message": "Достигнуто максимальное количество категорий"}
 
             for item in all_categories:
-                if item.name == data.value:
+                if item.name == data["value"]:
                     return {"code": 423, "status": "locked", "message": "Это имя категории уже занято"}
 
-            new_category = CategoriesOrm(name=data.value, user_id=data.user_id)
+            new_category = CategoriesOrm(name=data["value"], user_id=data["user_id"])
             session.add(new_category)
 
             await session.flush()
@@ -58,10 +58,10 @@ class CategoriesRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = delete(CategoriesOrm).where(CategoriesOrm.id == data.category_id)
+            query = delete(CategoriesOrm).where(CategoriesOrm.id == data["category_id"])
             await session.execute(query)
 
-            query = select(TasksOrm).where(TasksOrm.category_id == data.category_id)
+            query = select(TasksOrm).where(TasksOrm.category_id == data["category_id"])
             result = await session.execute(query)
             tasks = result.scalars().all()
 
@@ -81,22 +81,22 @@ class CategoriesRepository:
             if access_token['code'] != 200:
                 return access_token
 
-            query = select(CategoriesOrm).where(CategoriesOrm.id == data.category_id)
+            query = select(CategoriesOrm).where(CategoriesOrm.id == data["category_id"])
             result = await session.execute(query)
             category = result.scalars().first()
 
             if category is None:
                 return {"code": 404, "status": "not found"}
 
-            query = select(CategoriesOrm).where(CategoriesOrm.user_id == data.user_id)
+            query = select(CategoriesOrm).where(CategoriesOrm.user_id == data["user_id"])
             result_all = await session.execute(query)
             all_categories = result_all.scalars().all()
 
             for item in all_categories:
-                if item.name == data.new_value:
+                if item.name == data["new_value"]:
                     return {"code": 423, "status": "locked", "message": "Это имя категории уже занято"}
 
-            category.name = data.new_value
+            category.name = data["new_value"]
 
             await session.flush()
             await session.commit()

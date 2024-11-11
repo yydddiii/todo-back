@@ -22,30 +22,49 @@ async def del_user(select_id: UserID):
 
 
 @router.post("/ckeck_token")
-async def check_token(token: UserToken):
-    result = await UserRepository.check_user_token(token)
+async def check_token(user_id: int, token: str):
+    result = await UserRepository.check_user_token({
+        "user_id": user_id,
+        "token": token,
+    })
     return result
 
 
 @router.post("/login")
-async def user_login(data: UserModel):
-    result = await UserRepository.user_login(data)
+async def user_login(login: str, password: str):
+    result = await UserRepository.user_login({
+        "login": login,
+        "password": password
+    })
     return result
 
 
 @router.post("/register")
-async def user_register(data: UserModel):
-    result = await UserRepository.user_register(data)
+async def user_register(login: str, password: str):
+    result = await UserRepository.user_register({
+        "login": login,
+        "password": password
+    })
     return result
 
 
 @router.post("/change/login")
-async def user_change_login(data: UserChange):
-    result = await UserRepository.user_change_login(data)
+async def user_change_login(user_id: int, token: str, current_password:str, new_value:str):
+    result = await UserRepository.user_change_login({
+        "user_id": user_id,
+        "token": token,
+        "current_password": current_password,
+        "new_value": new_value
+    })
     return result
 
 
 @router.post("/change/password")
-async def user_change_password(data: UserChange):
-    result = await UserRepository.user_change_password(data)
+async def user_change_password(user_id: int, token: str, current_password:str, new_value:str):
+    result = await UserRepository.user_change_password({
+        "user_id": user_id,
+        "token": token,
+        "current_password": current_password,
+        "new_value": new_value
+    })
     return result
