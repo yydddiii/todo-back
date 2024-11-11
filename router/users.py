@@ -39,6 +39,12 @@ async def user_register(data: UserModel):
     return result
 
 
+@router.options("/register")
+async def user_register(data: UserModel):
+    result = await UserRepository.user_register(data)
+    return result
+
+
 @router.post("/change/login")
 async def user_change_login(data: UserChange):
     result = await UserRepository.user_change_login(data)
