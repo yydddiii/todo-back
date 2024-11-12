@@ -30,11 +30,11 @@ class UserRepository:
     @classmethod
     async def check_user_token(cls, select_token: UserToken):
         async with new_session() as session:
-            query = select(UsersOrm).where(UsersOrm.id == select_token["user_id"])
+            query = select(UsersOrm).where(UsersOrm.token == select_token["token"])
             result = await session.execute(query)
             select_user = result.scalars().first()
 
-            if select_user is None or select_user.token != select_token["token"]:
+            if select_user is None:
                 return {"code": 403, "status": "forbidden"}
 
             return {"code": 200, "status": "ok", "data": {"user_id": select_user.id, "user_login": select_user.login}}

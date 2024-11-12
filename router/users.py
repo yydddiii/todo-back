@@ -22,9 +22,8 @@ async def del_user(select_id: UserID):
 
 
 @router.post("/ckeck_token")
-async def check_token(user_id: int, token: str):
+async def check_token(token: str):
     result = await UserRepository.check_user_token({
-        "user_id": user_id,
         "token": token,
     })
     return result
